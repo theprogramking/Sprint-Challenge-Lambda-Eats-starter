@@ -6,29 +6,35 @@ const Form = () => {
   const [formData, setFormData] = useState({
     name: "",
     size: "",
-    toppings: "",
+    pep: false,
+    sas: false,
+    pin: false,
+    bacon: false,
     si: "",
   });
 
   const [errors, setErrors] = useState({
     name: "",
-    size: "",
-    toppings: "",
+    pep: false,
+    sas: false,
+    pin: false,
+    bacon: false,
     si: "",
   });
+
+  const [post, setPost] = useState({});
 
   const [submitButton, setSubmitButtonToDisabled] = useState(true);
 
   const formSchema = Yup.object().shape({
     name: Yup.string()
-      .test(
-        "len",
-        "Must have two or more characters",
-        (val) => val.length === 2
-      )
+      .test("len", "Must have two or more characters", (val) => val.length > 2)
       .required("You must input your name."),
     size: Yup.string(),
-    toppings: Yup.boolean(),
+    pep: Yup.boolean(),
+    sas: Yup.boolean(),
+    pin: Yup.boolean(),
+    bacon: Yup.boolean(),
     si: Yup.string(),
   });
 
@@ -73,15 +79,19 @@ const Form = () => {
     axios
       .post("https://reqres.in/api/users", formData)
       .then((res) => {
-        setFormData(res.data);
-        setFormData({
-          name: "",
-          size: "",
-          toppings: "",
-          si: "",
-        });
+        setPost(res.data);
       })
       .catch((err) => console.log(err.response));
+
+    setFormData({
+      name: "",
+      size: "",
+      pep: false,
+      sas: false,
+      pin: false,
+      bacon: false,
+      si: "",
+    });
   };
 
   return (
@@ -95,55 +105,71 @@ const Form = () => {
         />
         {errors.name.length > 0 ? <p className="error">{errors.name}</p> : null}
       </label>
+      <br />
+      <br />
+      <br />
       <label>
+        Size:
         <select id="size" name="size" onChange={(event) => handleChange(event)}>
           <option value="Large">Large</option>
           <option value="Medium">Medium</option>
           <option value="Small">Small</option>
           <option value="Heart Attack">Heart Attack</option>
         </select>
-        {errors.name.length > 0 ? <p className="error">{errors.size}</p> : null}
       </label>
+      <br />
+      <br />
+      <br />
       <label>
         Pepperoni:
         <input
-          name="toppings"
+          name="pep"
+          id="pep"
           type="checkbox"
-          checked={false}
+          checked={formData.pep}
           onChange={(event) => handleChange(event)}
         />
         Sausage:
         <input
-          name="toppings"
+          name="sas"
+          id="sas"
           type="checkbox"
-          checked={false}
+          checked={formData.sas}
           onChange={(event) => handleChange(event)}
         />
         Pinapple:
         <input
-          name="toppings"
+          name="pin"
+          id="pin"
           type="checkbox"
-          checked={false}
+          checked={formData.pin}
           onChange={(event) => handleChange(event)}
         />
         Bacon:
         <input
-          name="toppings"
+          name="bacon"
+          id="bacon"
           type="checkbox"
-          checked={false}
+          checked={formData.bacon}
           onChange={(event) => handleChange(event)}
         />
       </label>
+      <br />
+      <br />
+      <br />
       <label>
         Special Instructions:
         <textarea
           name="si"
           onChange={(event) => handleChange(event)}
         ></textarea>
-        {errors.name.length > 0 ? <p className="error">{errors.si}</p> : null}
       </label>
+      <br />
+      <br />
+      <br />
       <button disabled={setSubmitButtonToDisabled}>Add to Order!</button>
-      <pre>{JSON.stringify(formData, null, 2)}</pre>
+      <pre>Form State: {JSON.stringify(formData, null, 2)}</pre>
+      <pre>Post Data: {JSON.stringify(post, null, 2)}</pre>
     </form>
   );
 };
