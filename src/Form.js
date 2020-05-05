@@ -24,7 +24,7 @@ const Form = () => {
 
   const [post, setPost] = useState({});
 
-  const [submitButton, setSubmitButtonToDisabled] = useState(true);
+  const [submitButton, setSubmitButton] = useState(true);
 
   const formSchema = Yup.object().shape({
     name: Yup.string()
@@ -40,7 +40,7 @@ const Form = () => {
 
   useEffect(() => {
     formSchema.isValid(formData).then((valid) => {
-      setSubmitButtonToDisabled(false);
+      setSubmitButton(!valid);
     });
   }, [formSchema, formData]);
 
@@ -82,20 +82,14 @@ const Form = () => {
         setPost(res.data);
       })
       .catch((err) => console.log(err.response));
-
-    setFormData({
-      name: "",
-      size: "",
-      pep: false,
-      sas: false,
-      pin: false,
-      bacon: false,
-      si: "",
-    });
   };
 
   return (
-    <form onSubmit={(event) => handleSubmit(event)}>
+    <form
+      onSubmit={(event) => {
+        handleSubmit(event);
+      }}
+    >
       <label>
         Name:
         <input
@@ -167,7 +161,7 @@ const Form = () => {
       <br />
       <br />
       <br />
-      <button disabled={setSubmitButtonToDisabled}>Add to Order!</button>
+      <button disabled={submitButton}>Add to Order!</button>
       <pre>Form State: {JSON.stringify(formData, null, 2)}</pre>
       <pre>Post Data: {JSON.stringify(post, null, 2)}</pre>
     </form>
